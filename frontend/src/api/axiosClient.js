@@ -1,12 +1,22 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+// Automatically resolve API URL:
+// 1. If explicit VITE_API_BASE_URL is provided, use it
+// 2. If running locally (localhost / 127.0.0.1), use '/api' (proxied by Vite to local Flask)
+// 3. Otherwise in cloud production (on Vercel), route directly to live Render backend API!
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? '/api'
+    : 'https://smart-pet-tracking-api.onrender.com/api');
 
 const axiosClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 15000, // 15-second timeout for server response
 });
 
 // Interceptor to inject JWT token

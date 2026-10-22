@@ -20,7 +20,12 @@ const LoginPage = () => {
       await login(email, password);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+      const msg =
+        err.response?.data?.message ||
+        (err.response?.status === 405 ? 'Server connection routing issue. Retrying...' : null) ||
+        err.message ||
+        'Login failed. Please check your credentials.';
+      setError(msg);
     } finally {
       setLoading(false);
     }

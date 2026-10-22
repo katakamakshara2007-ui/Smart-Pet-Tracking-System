@@ -44,7 +44,12 @@ const RegisterPage = () => {
       });
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please check inputs.');
+      const msg =
+        err.response?.data?.message ||
+        (err.response?.status === 405 ? 'Server connection routing issue. Retrying...' : null) ||
+        err.message ||
+        'Registration failed. Please check inputs.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
